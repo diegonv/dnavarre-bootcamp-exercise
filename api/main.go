@@ -5,8 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 var replacer = strings.NewReplacer("!", "", "?", "", "ä", "a", "á", "a", "ë", "e", "é", "e", "ï", "i", "í", "i", "ö", "o", "ó", "o", "ü", "u", "ú", "u")
@@ -40,6 +41,6 @@ func main() {
 	// println("Starting...")
 	router := mux.NewRouter()
 	router.HandleFunc("/", GetRoot).Methods("GET")
-	router.HandleFunc("/count", GetCount).Queries("input","{input}").Methods("GET")
+	router.HandleFunc("/count", GetCount).Queries("input", "{input}").Methods("GET")
 	log.Fatal(http.ListenAndServe(":4567", router))
 }
