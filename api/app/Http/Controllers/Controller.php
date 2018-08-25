@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class Controller extends BaseController
@@ -12,20 +13,20 @@ class Controller extends BaseController
         return [];
     }
 
-    public function count(Request $request)
-    {
-         $input = str_split(
-            preg_replace('/\W/', '', strtolower($request->input('input')))
+    private function normalizeInput($input){
+        return preg_replace('/\W/', '', 
+            Str::ascii(strtolower($input))
         );
-
-        foreach ($input as $key) {
-            $output[$key] = $this->getValueForLetters($key);
-        }
-        return $output;
     }
 
-    private function getValueForLetters($letter){
-        return (strpos('heoi',$letter) !== false) ? 1: 2;
+    public function count(Request $request)
+    {
+        $input = $this->normalizeInput($request->input('input'));
+
+        return collect(str_split($input))->mapWithKeys(function ($item) use ($input) { 
+            return [$item => substr_count($input,$item)];
+        });
+
     }
 
 }
